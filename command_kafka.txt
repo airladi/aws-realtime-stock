@@ -1,0 +1,39 @@
+ssh -i "kafka-stock-market.pem" ec2-user@ec2-34-228-159-153.compute-1.amazonaws.com
+wget https://archive.apache.org/dist/kafka/3.3.1/kafka_2.12-3.3.1.tgz
+tar -xvf kafka_2.12-3.3.1.tgz
+stock API: N9MR6Q9YATHYISZI
+-----------------------
+sudo yum install java-1.8.0-openjdk
+java -version
+cd kafka_2.12-3.3.1
+
+It is pointing to private server , change server.properties so that it can run in public IP 
+
+To do this , you can follow any of the 2 approaches shared belwo --
+Do a "sudo nano config/server.properties" - change ADVERTISED_LISTENERS to public ip of the EC2 instance
+
+Start Zoo-keeper:
+-------------------------------
+cd kafka_2.12-3.3.1
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+Start Kafka-server:
+----------------------------------------
+cd kafka_2.12-3.3.1
+export KAFKA_HEAP_OPTS="-Xmx256M -Xms128M"
+bin/kafka-server-start.sh config/server.properties
+
+Create the topic:
+-----------------------------
+cd kafka_2.12-3.3.1
+bin/kafka-topics.sh --create --topic demo_testing2 --bootstrap-server 34.228.159.153:9092 --replication-factor 1 --partitions 1
+
+Start Producer:
+--------------------------
+cd kafka_2.12-3.3.1
+bin/kafka-console-producer.sh --topic demo_testing2 --bootstrap-server 34.228.159.153:9092
+
+Start Consumer:
+-------------------------
+cd kafka_2.12-3.3.1
+bin/kafka-console-consumer.sh --topic demo_testing2 --bootstrap-server 34.228.159.153:9092
